@@ -9,8 +9,9 @@ export ADD_HOOKS="self-updater.hook"
 export UPINFO="gh-releases-zsync|${GITHUB_REPOSITORY%/*}|${GITHUB_REPOSITORY#*/}|latest|*$ARCH.AppImage.zsync"
 export ICON=https://raw.githubusercontent.com/TagStudioDev/TagStudio/main/src/tagstudio/resources/icon.png
 export DESKTOP=https://raw.githubusercontent.com/TagStudioDev/TagStudio/main/src/tagstudio/resources/tagstudio.desktop
+export DEPLOY_OPENGL=1
+export DEPLOY_VULKAN=1
 export DEPLOY_QT=1
-export DEPLOY_PYTHON=1
 
 # Deploy dependencies
 quick-sharun \
@@ -19,8 +20,11 @@ quick-sharun \
   /usr/bin/ffmpeg \
   /usr/bin/ffprobe
 
+# Ensure PyInstaller finds _internal in shared/bin where quick-sharun moves the binary
+ln -sf ../../bin/_internal ./AppDir/shared/bin/_internal
+
 # Turn AppDir into AppImage
 quick-sharun --make-appimage
 
 # Test the app
-quick-sharun --test ./dist/*.AppImage
+quick-sharun --simple-test ./dist/*.AppImage
